@@ -117,7 +117,7 @@ class _ResultScreenState extends State<ResultScreen> {
       case 'High':
         return 9.0;
       default:
-        return prediction.finalScore;
+        return currentPrediction.finalScore;
     }
   }
 
@@ -269,19 +269,19 @@ class _ResultScreenState extends State<ResultScreen> {
               SizedBox(height: 32),
 
               // 4. Alert Box
-              if (prediction.crowdLevel == 'High')
+              if (currentPrediction.crowdLevel == 'High')
                 _buildAlertBox(
                   "⚠️ Expect delays. Try alternate time.",
                   Colors.redAccent.withOpacity(0.2),
                   Colors.redAccent,
                 ),
-              if (prediction.crowdLevel == 'Low')
+              if (currentPrediction.crowdLevel == 'Low')
                 _buildAlertBox(
                   "✅ Good time to travel!",
                   Color(0xFF00E5A8).withOpacity(0.2),
                   Color(0xFF00E5A8),
                 ),
-              if (prediction.crowdLevel == 'Medium')
+              if (currentPrediction.crowdLevel == 'Medium')
                 _buildAlertBox(
                   "ℹ️ Moderate crowd. Plan accordingly.",
                   Colors.amberAccent.withOpacity(0.2),

@@ -71,7 +71,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
           children: [
             // Welcome Section
             Text(
-              "Welcome back!",
+              "Welcome back${userData != null ? ', ${userData!['name']}' : ''}!",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
