@@ -3,7 +3,7 @@ import '../models/prediction_model.dart';
 import '../services/api_service.dart';
 import 'dashboard_screen.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   final PredictionModel prediction;
   final String route;
   final String time;
@@ -16,6 +16,19 @@ class ResultScreen extends StatelessWidget {
     required this.time,
     required this.weather,
   }) : super(key: key);
+
+  @override
+  _ResultScreenState createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  late PredictionModel currentPrediction;
+
+  @override
+  void initState() {
+    super.initState();
+    currentPrediction = widget.prediction;
+  }
 
   Color _getColor() {
     switch (prediction.crowdLevel) {
@@ -61,15 +74,30 @@ class ResultScreen extends StatelessWidget {
       onPressed: () async {
         Navigator.pop(context);
         bool success = await ApiService.submitFeedback(
-          time,
-          weather,
+          widget.time,
+          widget.weather,
           feedbackValue,
-          route,
+          widget.route,
         );
+        if (success) {
+          // Update the prediction based on user feedback
+          setState(() {
+            currentPrediction = PredictionModel(
+              crowdLevel: level,
+              finalScore: _calculateUpdatedScore(level),
+              feedbackScore: currentPrediction.feedbackScore,
+              timeScore: currentPrediction.timeScore,
+              weatherScore: currentPrediction.weatherScore,
+              historyScore: currentPrediction.historyScore,
+            );
+          });
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              success ? "Thanks! AI Model Updated." : "Failed to submit.",
+              success
+                  ? "Thanks! Report updated and AI model improved."
+                  : "Failed to submit.",
             ),
             backgroundColor: success ? Colors.green : Colors.red,
           ),
@@ -77,6 +105,20 @@ class ResultScreen extends StatelessWidget {
       },
       child: Text(level, style: TextStyle(color: Color(0xFF00E5A8))),
     );
+  }
+
+  double _calculateUpdatedScore(String level) {
+    // Simple logic to update score based on user feedback
+    switch (level) {
+      case 'Low':
+        return 3.0;
+      case 'Medium':
+        return 6.0;
+      case 'High':
+        return 9.0;
+      default:
+        return prediction.finalScore;
+    }
   }
 
   @override
@@ -129,7 +171,7 @@ class ResultScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 12),
                       Text(
-                        prediction.crowdLevel.toUpperCase(),
+                        currentPrediction.crowdLevel.toUpperCase(),
                         style: TextStyle(
                           color: _getColor(),
                           fontSize: 40,
@@ -139,7 +181,7 @@ class ResultScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        "Score: ${prediction.finalScore.toStringAsFixed(1)}",
+                        "Score: ${currentPrediction.finalScore.toStringAsFixed(1)}",
                         style: TextStyle(color: Colors.white38, fontSize: 12),
                       ),
                     ],
@@ -159,11 +201,11 @@ class ResultScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    _buildInfoRow("Route", route, Icons.directions_bus),
+                    _buildInfoRow("Route", widget.route, Icons.directions_bus),
                     Divider(color: Colors.white10, height: 24),
-                    _buildInfoRow("Time", time, Icons.access_time),
+                    _buildInfoRow("Time", widget.time, Icons.access_time),
                     Divider(color: Colors.white10, height: 24),
-                    _buildInfoRow("Weather", weather, Icons.cloud),
+                    _buildInfoRow("Weather", widget.weather, Icons.cloud),
                   ],
                 ),
               ),
@@ -202,22 +244,22 @@ class ResultScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     _buildScoreRow(
                       "Feedback Impact (40%)",
-                      prediction.feedbackScore,
+                      currentPrediction.feedbackScore,
                       Colors.blueAccent,
                     ),
                     _buildScoreRow(
                       "Time Factor (30%)",
-                      prediction.timeScore,
+                      currentPrediction.timeScore,
                       Colors.orangeAccent,
                     ),
                     _buildScoreRow(
                       "Weather Impact (20%)",
-                      prediction.weatherScore,
+                      currentPrediction.weatherScore,
                       Colors.lightBlueAccent,
                     ),
                     _buildScoreRow(
                       "History Trend (10%)",
-                      prediction.historyScore,
+                      currentPrediction.historyScore,
                       Colors.purpleAccent,
                     ),
                   ],

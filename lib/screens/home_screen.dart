@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'assest/images/mumbai_map.jpg',
                     ), // Add your map image
                     fit: BoxFit.cover,
-                    opacity: 0.3,
+                    opacity: 0.7,
                   ),
                 ),
                 child: Center(
@@ -130,6 +130,36 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TransportSelectionScreen(
+                            selectedMode: selectedMode,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF00E5A8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      "Check Prediction",
+                      style: TextStyle(
+                        color: Color(0xFF0B1C2D),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

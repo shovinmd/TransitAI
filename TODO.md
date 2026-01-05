@@ -1,14 +1,13 @@
-# TODO List for App Modifications
+# TODO List for UI Updates
 
-## 1. Replace Authority Dashboard with User Dashboard
-- [ ] Update main_screen.dart to use UserDashboardScreen instead of DashboardScreen in the bottom navigation.
+## 1. Update Home Screen
+- [ ] Remove "Mumbai Transport Network" text from center
+- [ ] Make map image clearer (increase opacity)
+- [ ] Add "Check Prediction" button to bottom sheet
 
-## 2. Fetch Actual User Data in User Dashboard
-- [ ] Modify user_dashboard_screen.dart to fetch real user data from backend using AuthService.getUser().
-- [ ] Replace static data with dynamic data fetched from backend.
+## 2. Update Predict Screen Tab
+- [ ] Let users select route and display fetched data
+- [ ] Name it "Clear Profile" and choose the screen
 
-## 3. Make Home Screen Map Zoomable
-- [ ] Update home_screen.dart to wrap the map image in InteractiveViewer for zoom in/out functionality.
-
-## 4. Change App Name
-- [ ] Update pubspec.yaml to change app name from "crowd_app" to "TransitAI".
+## 3. User Report Status Update
+- [ ] See if user reports different status in able to update that report based on that update the it okay
