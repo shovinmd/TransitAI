@@ -73,11 +73,17 @@ class _ResultScreenState extends State<ResultScreen> {
     return TextButton(
       onPressed: () async {
         Navigator.pop(context);
+        final parts = widget.route.split(' - ');
+        final mode = parts.isNotEmpty ? parts[0] : 'Train';
+        final line = parts.length > 1 ? parts[1] : widget.route;
+        final station = 'Unknown';
         bool success = await ApiService.submitFeedback(
+          mode,
+          line,
+          station,
           widget.time,
           widget.weather,
           feedbackValue,
-          widget.route,
         );
         if (success) {
           // Update the prediction based on user feedback

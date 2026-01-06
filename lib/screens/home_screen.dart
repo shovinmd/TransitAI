@@ -54,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadLines(String mode) async {
     try {
       lines = await ApiService.getTransportLines(mode);
+      lines = lines.toSet().toList();
       selectedLine = lines.isNotEmpty ? lines.first : null;
       selectedStation = null;
       if (selectedLine != null) {
@@ -62,6 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print('Error loading lines: $e');
       lines = [];
+      selectedLine = null;
+      selectedStation = null;
     }
     setState(() {});
   }
@@ -69,10 +72,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadStations(String mode, String line) async {
     try {
       stations = await ApiService.getTransportStations(mode, line);
+      stations = stations.toSet().toList();
       selectedStation = stations.isNotEmpty ? stations.first : null;
     } catch (e) {
       print('Error loading stations: $e');
       stations = [];
+      selectedStation = null;
     }
     setState(() {});
   }
@@ -209,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            value: selectedLine,
+                            value: lines.contains(selectedLine) ? selectedLine : null,
                             dropdownColor: Color(0xFF1E2A38),
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
@@ -239,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(width: 16),
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            value: selectedStation,
+                            value: stations.contains(selectedStation) ? selectedStation : null,
                             dropdownColor: Color(0xFF1E2A38),
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(

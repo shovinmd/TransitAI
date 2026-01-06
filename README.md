@@ -13,6 +13,14 @@ A Flutter-based mobile application that uses AI to predict real-time crowd level
 - **Authority Dashboard**: Overview for transportation authorities
 - **Cross-Platform**: Built with Flutter for iOS and Android
 
+## ✅ Solution Overview
+
+- Crowd Prediction Engine: Uses past travel and feedback data to predict Low / Medium / High crowd levels on each route and time.
+- Early Crowd Alert System: Detects sudden spikes in crowd and sends early alerts to commuters and operators.
+- Smart Suggestions for Commuters: Recommends better times or routes when a trip is likely to be crowded.
+- Weather-Aware Planner: Adjusts predictions on rainy or extreme days when more people shift to public transport.
+- Community Inputs: Lets users share live crowd updates to keep the system accurate over time.
+
 ## 🏗️ Architecture
 
 This project consists of two main components:
@@ -122,9 +130,11 @@ Predicts crowd level based on inputs.
 **Request:**
 ```json
 {
-  "route": "Bus Line 1",
+  "mode": "Train",
+  "line": "Western",
+  "station": "Andheri",
   "timeSlot": "Peak",
-  "weather": "Rainy",
+  "weather": "Sunny",
   "feedback": "Normal"
 }
 ```
@@ -149,9 +159,11 @@ Submits user feedback for model improvement.
 **Request:**
 ```json
 {
-  "route": "Bus Line 1",
+  "mode": "Train",
+  "line": "Western",
+  "station": "Andheri",
   "timeSlot": "Peak",
-  "weather": "Rainy",
+  "weather": "Sunny",
   "feedback": "Overcrowded"
 }
 ```

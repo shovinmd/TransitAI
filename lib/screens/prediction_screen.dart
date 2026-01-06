@@ -196,10 +196,12 @@ class _PredictionScreenState extends State<PredictionScreen> {
         // Submit feedback immediately when button is tapped
         try {
           await ApiService.submitFeedback(
+            widget.mode,
+            widget.line,
+            widget.station,
             widget.timeSlot,
             widget.weather,
             feedback,
-            '${widget.mode} ${widget.line} ${widget.station}',
           );
 
           // Show success message

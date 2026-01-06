@@ -40,10 +40,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
     try {
       await ApiService.submitFeedback(
+        widget.mode,
+        widget.line,
+        widget.station,
         widget.timeSlot,
         widget.weather,
         widget.feedback,
-        '${widget.mode} ${widget.line} ${widget.station}',
       );
 
       ScaffoldMessenger.of(

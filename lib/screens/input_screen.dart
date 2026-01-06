@@ -10,12 +10,14 @@ class InputScreen extends StatefulWidget {
 class _InputScreenState extends State<InputScreen> {
   String selectedMode = 'Train';
   String? selectedRoute;
+  String? selectedStation;
   String selectedTime = 'Normal';
   String selectedWeather = 'Clear';
   String? feedback;
   bool isLoading = false;
   Map<String, dynamic> transportNetwork = {};
   List<String> routes = [];
+  List<String> stations = [];
 
   final List<String> times = ['Peak', 'Normal'];
   final List<String> weathers = ['Clear', 'Rainy'];
@@ -43,13 +45,29 @@ class _InputScreenState extends State<InputScreen> {
   void _updateRoutesForMode(String mode) {
     if (transportNetwork.containsKey(mode)) {
       final modeData = transportNetwork[mode] as Map<String, dynamic>;
-      routes = modeData.keys.toList();
-      if (routes.isNotEmpty && selectedRoute == null) {
-        selectedRoute = routes.first;
-      }
+      routes = modeData.keys.toList().toSet().toList();
+      selectedRoute = routes.isNotEmpty ? routes.first : null;
+      _updateStationsForRoute(mode, selectedRoute);
     } else {
       routes = [];
+      selectedRoute = null;
+      stations = [];
+      selectedStation = null;
     }
+  }
+
+  void _updateStationsForRoute(String mode, String? route) {
+    if (route != null && transportNetwork[mode] != null) {
+      final modeData = transportNetwork[mode] as Map<String, dynamic>;
+      final list = modeData[route];
+      if (list is List) {
+        stations = List<String>.from(list).toSet().toList();
+        selectedStation = stations.isNotEmpty ? stations.first : null;
+        return;
+      }
+    }
+    stations = [];
+    selectedStation = null;
   }
 
   void _predict() async {
@@ -60,7 +78,7 @@ class _InputScreenState extends State<InputScreen> {
     final result = await ApiService.predictCrowd(
       selectedMode,
       selectedRoute ?? 'Line 1',
-      'Unknown',
+      selectedStation ?? 'Unknown',
       selectedTime,
       selectedWeather,
       feedback ?? 'Normal',
@@ -129,8 +147,15 @@ class _InputScreenState extends State<InputScreen> {
             ),
             SizedBox(height: 16),
             _buildDropdown("Select Route", routes, selectedRoute, (val) {
-              setState(() => selectedRoute = val);
+              setState(() {
+                selectedRoute = val;
+                _updateStationsForRoute(selectedMode, selectedRoute);
+              });
             }, Icons.directions_bus),
+            SizedBox(height: 16),
+            _buildDropdown("Select Station", stations, selectedStation, (val) {
+              setState(() => selectedStation = val);
+            }, Icons.location_pin),
             SizedBox(height: 16),
             _buildDropdown("Select Time", times, selectedTime, (val) {
               setState(() => selectedTime = val!);
@@ -218,7 +243,7 @@ class _InputScreenState extends State<InputScreen> {
           SizedBox(height: 4),
           DropdownButtonHideUnderline(
             child: DropdownButton<String>(
-              value: value,
+              value: items.contains(value) ? value : null,
               isExpanded: true,
               hint: Text("Select...", style: TextStyle(color: Colors.white38)),
               dropdownColor: Color(0xFF1E2A38),
@@ -228,7 +253,7 @@ class _InputScreenState extends State<InputScreen> {
                 fontWeight: FontWeight.w600,
               ),
               icon: Icon(Icons.keyboard_arrow_down, color: Color(0xFF00E5A8)),
-              items: items.map((String item) {
+              items: items.toSet().map((String item) {
                 return DropdownMenuItem<String>(value: item, child: Text(item));
               }).toList(),
               onChanged: onChanged,
