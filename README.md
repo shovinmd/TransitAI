@@ -1,4 +1,5 @@
-# Smart Crowd Predictor
+# Transit AI – Predictive Public Transport Crowding Indicator
+
 
 A Flutter-based mobile application that uses AI to predict real-time crowd levels in public transportation systems. The app helps users make informed decisions about travel timing and routes based on behavioral patterns, weather conditions, and historical data.
 
@@ -44,11 +45,11 @@ Displays AI prediction with:
 - Detailed factor breakdown
 - Actionable recommendations
 
-### Authority Dashboard (Optional)
-Route overview for authorities:
-- Crowd levels per route
-- Color-coded status badges
-- Historical trends
+### User Dashboard
+User dashboard with personalized features:
+- View prediction history
+- Manage user preferences
+- Access to user-specific insights
 
 ## 🛠️ Tech Stack
 

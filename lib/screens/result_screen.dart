@@ -31,7 +31,7 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Color _getColor() {
-    switch (prediction.crowdLevel) {
+    switch (currentPrediction.crowdLevel) {
       case 'High':
         return Colors.redAccent;
       case 'Medium':

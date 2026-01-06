@@ -30,10 +30,14 @@ class AuthService {
   static Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    
+
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => LoginScreen()),
       (Route<dynamic> route) => false,
     );
+  }
+
+  static Future<Map<String, dynamic>?> getUserData() async {
+    return await getUser();
   }
 }

@@ -38,10 +38,12 @@ class _PredictionScreenState extends State<PredictionScreen> {
 
     try {
       final result = await ApiService.predictCrowd(
+        widget.mode,
+        widget.line,
+        widget.station,
         widget.timeSlot,
         widget.weather,
         'Normal',
-        '${widget.mode} ${widget.line} ${widget.station}',
       );
 
       setState(() {

@@ -58,10 +58,12 @@ class _InputScreenState extends State<InputScreen> {
     });
 
     final result = await ApiService.predictCrowd(
+      selectedMode,
+      selectedRoute ?? 'Line 1',
+      'Unknown',
       selectedTime,
       selectedWeather,
       feedback ?? 'Normal',
-      '$selectedMode - ${selectedRoute ?? 'Line 1'}',
     );
 
     setState(() {

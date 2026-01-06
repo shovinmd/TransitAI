@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import 'feedback_screen.dart';
 
 class UserPredictionScreen extends StatefulWidget {
@@ -24,11 +25,22 @@ class UserPredictionScreen extends StatefulWidget {
 class _UserPredictionScreenState extends State<UserPredictionScreen> {
   String? crowdLevel;
   bool isLoading = true;
+  Map<String, dynamic>? userData;
 
   @override
   void initState() {
     super.initState();
+    _loadUserData();
     _predictCrowd();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      userData = await AuthService.getUserData();
+      setState(() {});
+    } catch (e) {
+      print('Error loading user data: $e');
+    }
   }
 
   Future<void> _predictCrowd() async {
@@ -38,10 +50,12 @@ class _UserPredictionScreenState extends State<UserPredictionScreen> {
 
     try {
       final result = await ApiService.predictCrowd(
+        widget.mode,
+        widget.line,
+        widget.station,
         widget.timeSlot,
         widget.weather,
         'Normal',
-        '${widget.mode} ${widget.line} ${widget.station}',
       );
 
       setState(() {
@@ -83,6 +97,54 @@ class _UserPredictionScreenState extends State<UserPredictionScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // User Info Card
+            if (userData != null)
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Color(0xFF1E2A38),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Color(0xFF00E5A8),
+                      child: Text(
+                        userData!['name']?.substring(0, 1).toUpperCase() ?? 'U',
+                        style: TextStyle(
+                          color: Color(0xFF0B1C2D),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Welcome, ${userData!['name'] ?? 'User'}",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "Personalized prediction for you",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            SizedBox(height: 16),
+
             // Transport Info Card
             Container(
               padding: EdgeInsets.all(16),
@@ -194,12 +256,13 @@ class _UserPredictionScreenState extends State<UserPredictionScreen> {
         // Submit feedback immediately when button is tapped
         try {
           await ApiService.submitFeedback(
+            widget.mode,
+            widget.line,
+            widget.station,
             widget.timeSlot,
             widget.weather,
             feedback,
-            '${widget.mode} ${widget.line} ${widget.station}',
           );
-
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Feedback submitted successfully!")),

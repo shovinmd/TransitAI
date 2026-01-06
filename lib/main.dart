@@ -3,17 +3,11 @@ import 'screens/login_screen.dart';
 import 'screens/main_screen.dart';
 import 'services/auth_service.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final isLoggedIn = await AuthService.isLoggedIn();
-  runApp(CrowdApp(isLoggedIn: isLoggedIn));
+void main() {
+  runApp(CrowdApp());
 }
 
 class CrowdApp extends StatelessWidget {
-  final bool isLoggedIn;
-
-  CrowdApp({required this.isLoggedIn});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +25,7 @@ class CrowdApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: isLoggedIn ? MainScreen() : LoginScreen(),
+      home: MainScreen(),
     );
   }
 }
